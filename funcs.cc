@@ -1,7 +1,9 @@
 #include <stdio.h>
-#include <iostream.h>
-#include <unistd.h> //for the getopt function
-#include <stdlib.h> //for atoi
+#include <iostream>
+#include <unistd> //for the getopt function
+#include <stdlib> //for atoi
+
+using namespace std;
 
 bool parseParams(int argc, char *argv[ ], int& cache_capacity,
 				int& cache_blocksize, int& cache_associativity)

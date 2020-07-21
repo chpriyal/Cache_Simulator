@@ -1,6 +1,8 @@
 #include <stdio.h>
-#include <iostream.h>
+#include <iostream>
 #include "funcs.h"
+
+using namespace std;
 
 int main (int argc, char *argv[ ])
 {
@@ -20,6 +22,9 @@ int main (int argc, char *argv[ ])
   cout << "Cache Capacity: " << cache_capacity << endl;
   cout << "Cache BlockSize: " << cache_blocksize << endl;
   cout << "Cache Associativity: " << cache_associativity << endl;
+
+  
+
 
 }
 
