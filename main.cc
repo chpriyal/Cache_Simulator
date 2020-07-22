@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <iostream>
 #include "funcs.h"
+#include "io.h"
+
+#define CACHE_READ 0
+#define CACHE_WRITE 1
 
 using namespace std;
 
@@ -24,7 +28,6 @@ int main (int argc, char *argv[ ])
   cout << "Cache Associativity: " << cache_associativity << endl;
 
   
-
 
 }
 

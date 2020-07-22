@@ -1,12 +1,13 @@
 #include <iostream>
 #include <stdio.h>
+#include "block.h"
 
 #define CACHE_READ 0
 #define CACHE_WRITE 1
 
 using namespace std;
 
-int main(void)
+int trace_io(void)
 {
 
 	int i;
@@ -14,10 +15,13 @@ int main(void)
 	int address;
 	unsigned int data;
 
-	int memory[100];
+	int memory[1048576];//1 MegaWord of memory
+	//each location in the array stores 1 word
+	//each location is represented by a unique address
+	//4 MB of memory 
 
 	//initialise memory
-	for(i=0; i< 100; i++)
+	for(i=0; i< 1048576; i++)
 	{
 	  memory[i] = i;
 	}
