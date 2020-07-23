@@ -8,7 +8,7 @@ class Cache_Set{
 private:
 	int num_words_in_block;//Number of words in each block
 	int num_sets; //Number of sets
-	int set_number;
+	int set_index;//Set index
 	int size_sets; //Size of each set
 	int * mem; //Cache memory
 	int * tag;
@@ -23,11 +23,11 @@ public:
 	int reads;
 	int writes;
 	//Constructor
-	Cache_Set(int block_size, int size_sets, int num_sets, int set_number){
+	Cache_Set(int block_size, int size_sets, int num_sets, int set_index){
 		this.num_words_in_block = block_size/4; //each word is 4 bytes
 		this.size_sets = size_sets;
 		this.num_sets = num_sets;
-		this.set_number = set_number;
+		this.set_index = set_index;
 		mem = new int[size_sets*this.num_words_in_block];//allocating memory
 		valid = new int[size_sets];
 		lru_count = new int[size_sets];
@@ -98,7 +98,7 @@ public:
 		int set_offset = -1, temp = -1;
 		for(int i = 0; i < size_sets; ++i)	if(temp<lru_count[i])	set_offset=i;
 		int address = tag[set_offset]*num_sets*num_words_in_block;
-		address |= (set_number*num_words_in_block); 
+		address |= (set_index*num_words_in_block); 
 		if(dirty[set_offset]=1){
 			for(int i = 0; i < num_words_in_block; ++i) memory[address+i] = mem[set_offset+i];
 		}
@@ -108,7 +108,8 @@ public:
 	void fetchblock(int address){
 		this.miss++;
 		int set_offset;
-		for(int i = 0; i < size_sets; ++i) 	if(valid[i]=0)	set_offset
+		for(int i = 0; i < size_sets; ++i) 	if(valid[i]=0)	set_offset=i;
+		int quot = address/
 	}
 }
 
