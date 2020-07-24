@@ -39,7 +39,6 @@ public:
 	}
 
 	//Destructor
-	
 	~Cache_Set(){
 		delete [] mem;
 		delete [] valid;
@@ -52,10 +51,14 @@ public:
 		this.read++;
 		int set_offset=-1;
 		int block_offset=1;
+
+
 		for(int i=0; i< log2(num_words_in_block)-1;++i){
 			block_offset=(block_offset<<1)|1;
 		}
 		block_offset = block_offset & address;
+
+
 		int data;
 		int tagc= (address/num_sets)/num_words_in_block;
 		for(int i =0; i<size_sets; ++i){
@@ -64,19 +67,15 @@ public:
 				break;
 			}
 		}
+
+
 		if(set_offset==-1){
 			bool flag = false;
 			for(int i = 0; i < size_sets; ++i){
 				if(valid[i]==0)	flag = true;
 			}
 			if(!flag)	this.evictblock();
-			this.fetchblock(address);
-			for(int i =0; i<size_sets; ++i){
-				if(tag[i]==tagc && valid[i]=1){
-					set_offset=i;
-					break;
-				}
-			}
+			set_offset = this.fetchblock(address);
 			data = mem[set_offset*num_words_in_block + block_offset];
 			for(int i=0; i<size_sets; ++i)	lru_count[i]++;
 
@@ -89,9 +88,41 @@ public:
 		return data;
 	}
 
-	int write2address(int data, int address){
+	void write2address(int data, int address){
 		this.write++;
+		int set_offset=-1;
+		int block_offset=1;
+		int tagc = (address/num_sets)/num_words_in_block;
+		for(int i=0; i< log2(num_words_in_block)-1;++i){
+			block_offset=(block_offset<<1)|1;
+		}
+		block_offset = block_offset & address;
+		for(int i =0; i<size_sets; ++i){
+			if(tag[i]==tagc && valid[i]=1){
+				set_offset=i;
+				break;
+			}
+		}
 
+
+		if(set_offset==-1){
+			bool flag = false;
+			for(int i = 0; i < size_sets; ++i){
+				if(valid[i]==0)	flag = true;
+			}
+			if(!flag)	this.evictblock();
+			set_offset = this.fetchblock(address);
+			mem[set_offset*num_words_in_block + block_offset] = data;
+			for(int i=0; i<size_sets; ++i)	lru_count[i]++;
+
+		}
+		else{
+			mem[set_offset*num_words_in_block + block_offset]=data;
+			for(int i=0; i<size_sets; ++i)	lru_count[i]++;
+			lru_count[set_offset]=1;
+		}
+		dirty[set_offset]=1;
+		return;
 
 	}
 	void evictblock(){
@@ -101,15 +132,21 @@ public:
 		address |= (set_index*num_words_in_block); 
 		if(dirty[set_offset]=1){
 			for(int i = 0; i < num_words_in_block; ++i) memory[address+i] = mem[set_offset+i];
+			dirty[set_offset]=0;
 		}
 		valid[set_offset]=0;
 	}
 
-	void fetchblock(int address){
+	int fetchblock(int address, memory){
 		this.miss++;
 		int set_offset;
 		for(int i = 0; i < size_sets; ++i) 	if(valid[i]=0)	set_offset=i;
-		int quot = address/
+		int block_num = address - (address % num_words_in_block);
+		for(int i = 0; i < num_words_in_block; ++i){
+			mem[set_offset*num_words_in_block+i] = memory[block_num+i];
+		}
+		valid[set_offset]=1;
+		return set_offset;
 	}
 }
 
